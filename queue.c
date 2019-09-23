@@ -25,11 +25,12 @@
 queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
-    /* What if malloc returned NULL? */
+
     if (!q) {
         free(q);
         return NULL;
     }
+
     q->head = NULL;
     q->tail = NULL;
     q->size = 0;
@@ -39,10 +40,12 @@ queue_t *q_new()
 /* Free all storage used by queue */
 void q_free(queue_t *q)
 {
-    /* How about freeing the list elements and the strings? */
-    /* Free queue structure */
+    if (!q)
+        return;
+
     while (q_remove_head(q, NULL, 0))
         ;
+
     free(q);
 }
 
@@ -99,28 +102,37 @@ bool q_insert_tail(queue_t *q, char *s)
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
     list_ele_t *newh;
-    if (!q)
+
+    if (!q || !s)
         return false;
+
     newh = malloc(sizeof(list_ele_t));
+
     if (!newh) {
         free(newh);
         return false;
     }
+
     newh->value = malloc(strlen(s) * sizeof(char) + 1);
+
     if (!newh->value) {
         free(newh->value);
         free(newh);
         return false;
     }
+
     strcpy(newh->value, s);
+
     if (!q->head) {
         q->head = newh;
         q->tail = newh;
     }
+
     q->tail->next = newh;
     newh->next = NULL;
     q->tail = newh;
     q->size++;
+
     return true;
 }
 
@@ -138,15 +150,17 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
     if (!q || !q->head)
         return false;
 
-    if (bufsize) {
+    if (bufsize > 0) {
         memset(sp, '\0', bufsize);
         strncpy(sp, q->head->value, bufsize - 1);
     }
+
     list_ele_t *tem = q->head;
     q->head = q->head->next;
     free(tem->value);
     free(tem);
     q->size--;
+
     return true;
 }
 
@@ -156,9 +170,7 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
  */
 int q_size(queue_t *q)
 {
-    /* You need to write the code for this function */
-    /* Remember: It should operate in O(1) time */
-    return q->size;
+    return !q ? 0 : q->size;
 }
 
 /*
@@ -172,8 +184,10 @@ void q_reverse(queue_t *q)
 {
     if (!q || q->size < 2)
         return;
+
     list_ele_t *cur = q->head, *prev = NULL, *tem;
     q->tail = q->head;
+
     while (cur) {
         tem = cur;
         cur = cur->next;
