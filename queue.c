@@ -49,7 +49,11 @@ bool q_insert_head(queue_t *q, char *s)
 {
     list_ele_t *newh;
     /* What should you do if the q is NULL? */
+    if (!q)
+        return false;
     newh = malloc(sizeof(list_ele_t));
+    newh->value = malloc(strlen(s) * sizeof(char) + 1);
+    strcpy(newh->value, s);
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
     newh->next = q->head;
