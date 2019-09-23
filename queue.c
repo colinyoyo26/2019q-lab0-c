@@ -37,6 +37,8 @@ void q_free(queue_t *q)
 {
     /* How about freeing the list elements and the strings? */
     /* Free queue structure */
+    while (q_remove_head(q, NULL, 0))
+        ;
     free(q);
 }
 
@@ -113,7 +115,9 @@ bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
         memset(sp, '\0', bufsize);
         strncpy(sp, q->head->value, bufsize - 1);
     }
+    list_ele_t *tem = q->head;
     q->head = q->head->next;
+    free(tem);
     q->size--;
     return true;
 }
