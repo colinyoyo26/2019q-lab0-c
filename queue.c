@@ -76,7 +76,21 @@ bool q_insert_tail(queue_t *q, char *s)
 {
     /* You need to write the complete code for this function */
     /* Remember: It should operate in O(1) time */
-    return false;
+    list_ele_t *newh;
+    if (!q)
+        return false;
+    newh = malloc(sizeof(list_ele_t));
+    newh->value = malloc(strlen(s) * sizeof(char) + 1);
+    strcpy(newh->value, s);
+    if (!q->head) {
+        q->head = newh;
+        q->tail = newh;
+    }
+    q->tail->next = newh;
+    newh->next = NULL;
+    q->tail = newh;
+
+    return true;
 }
 
 /*
