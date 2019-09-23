@@ -26,6 +26,10 @@ queue_t *q_new()
 {
     queue_t *q = malloc(sizeof(queue_t));
     /* What if malloc returned NULL? */
+    if (!q) {
+        free(q);
+        return NULL;
+    }
     q->head = NULL;
     q->tail = NULL;
     q->size = 0;
@@ -55,8 +59,22 @@ bool q_insert_head(queue_t *q, char *s)
     /* What should you do if the q is NULL? */
     if (!q)
         return false;
+
     newh = malloc(sizeof(list_ele_t));
+
+    if (!newh) {
+        free(newh);
+        return false;
+    }
+
     newh->value = malloc(strlen(s) * sizeof(char) + 1);
+
+    if (!newh->value) {
+        free(newh->value);
+        free(newh);
+        return false;
+    }
+
     strcpy(newh->value, s);
     /* Don't forget to allocate space for the string and copy it */
     /* What if either call to malloc returns NULL? */
@@ -84,7 +102,16 @@ bool q_insert_tail(queue_t *q, char *s)
     if (!q)
         return false;
     newh = malloc(sizeof(list_ele_t));
+    if (!newh) {
+        free(newh);
+        return false;
+    }
     newh->value = malloc(strlen(s) * sizeof(char) + 1);
+    if (!newh->value) {
+        free(newh->value);
+        free(newh);
+        return false;
+    }
     strcpy(newh->value, s);
     if (!q->head) {
         q->head = newh;
