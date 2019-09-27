@@ -42,7 +42,6 @@ void q_free(queue_t *q)
 {
     while (q_remove_head(q, NULL, 0))
         ;
-
     free(q);
 }
 
@@ -174,14 +173,13 @@ void q_reverse(queue_t *q)
     if (!q || q->size < 2)
         return;
 
-    list_ele_t *cur = q->head, *prev = NULL, *tem;
+    list_ele_t *cur = q->head, *prev = NULL;
     q->tail = q->head;
 
     while (cur) {
-        tem = cur;
+        q->head = cur;
         cur = cur->next;
-        tem->next = prev;
-        prev = tem;
+        q->head->next = prev;
+        prev = q->head;
     }
-    q->head = prev;
 }
